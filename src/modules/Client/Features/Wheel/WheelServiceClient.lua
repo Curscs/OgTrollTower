@@ -25,7 +25,6 @@ local Remotes = Remoting.new(ReplicatedStorage:WaitForChild("Remotes"), "WheelSe
 local WheelServiceClient = {}
 
 -- [ Types ] --
-
 type ModuleData = {
     _ServiceBag: ServiceBag.ServiceBag,
     _WheelUIController: WheelUIController.Module,

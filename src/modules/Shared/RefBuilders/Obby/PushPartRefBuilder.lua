@@ -17,7 +17,7 @@ export type Structure = {
 -- [ Variables ] --
 
 -- [ Module Table ] --
-local PushPartStructure = function(TrollButton: BasePart)
+local PushPartRefBuilder = function(TrollButton: BasePart)
     local Texture = TrollButton:WaitForChild("Texture", 5)
     
     return {
@@ -25,10 +25,10 @@ local PushPartStructure = function(TrollButton: BasePart)
     } :: Structure
 end
 
-export type Module = typeof(PushPartStructure)
+export type Module = typeof(PushPartRefBuilder)
 
 -- [ Private Functions ] --
 
 -- [ Public Functions ] --
 
-return PushPartStructure :: Module
+return PushPartRefBuilder :: Module

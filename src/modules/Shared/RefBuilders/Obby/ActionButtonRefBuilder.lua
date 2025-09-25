@@ -8,7 +8,7 @@ local _require = require(script.Parent.loader).load(script)
 -- [ Imports ] --
 
 -- [ Types ] --
-export type ActionButtonStructure = {
+export type Structure = {
     Upper: Part,
     Lower: Part
 }
@@ -18,20 +18,20 @@ export type ActionButtonStructure = {
 -- [ Variables ] --
 
 -- [ Module Table ] --
-local ActionButtonStructure = function(TrollButton: Model)
+local ActionButtonRefBuilder = function(TrollButton: Model)
     local Upper = TrollButton:WaitForChild("Upper", 5)
     local Lower = TrollButton:WaitForChild("Lower", 5)
     
     return {
         Upper = Upper,
         Lower = Lower,
-    } :: ActionButtonStructure
+    } :: Structure
 end
 
-export type Module = typeof(ActionButtonStructure)
+export type Module = typeof(ActionButtonRefBuilder)
 
 -- [ Private Functions ] --
 
 -- [ Public Functions ] --
 
-return ActionButtonStructure :: Module
+return ActionButtonRefBuilder :: Module

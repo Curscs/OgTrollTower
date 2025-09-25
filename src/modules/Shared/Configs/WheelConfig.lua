@@ -15,9 +15,7 @@ local _require = require(script.Parent.loader).load(script)
 -- [ Variables ] --
 
 -- [ Module Table ] --
-local WheelConfig = {}
-
-WheelConfig._Wheel = {
+local WheelConfig = {
     Rewards = {
         ["3000 Coins"] = {
             Slot = 1,
@@ -73,12 +71,5 @@ WheelConfig._Wheel = {
 
 -- [ Types ] --
 export type Module = typeof(WheelConfig)
-
--- [ Private Functions ] --
-
--- [ Public Functions ] --
-function WheelConfig.GetVar(self: Module, varName: string)
-    return self._Wheel[varName]
-end
 
 return WheelConfig :: Module

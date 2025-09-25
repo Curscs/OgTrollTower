@@ -18,6 +18,7 @@ local UIRefs = require("UIRefs")
 local WheelUIRefs = require("WheelUIRefs")
 local HUDButtonsUIRefs = require("HUDButtonsUIRefs")
 local HUDOffersUIRefs = require("HUDOffersUIRefs")
+local GiftsUIRefs = require("GiftsUIRefs")
 
 -- [ Types ] --
 
@@ -45,7 +46,7 @@ function InitServiceClient.Init(self: Module, serviceBag: ServiceBag.ServiceBag)
 	local FeaturesDescendants = script.Parent.Features:GetDescendants()
 
 	for _, instance in FeaturesDescendants do
-        if instance:IsA("ModuleScript") and (instance.Name:lower():find("service") or instance.Name:lower():find("controller")) then
+        if instance:IsA("ModuleScript") and (instance.Name:lower():find("service") or instance.Name:lower():find("controller") or instance.Name:lower():find("cache")) then
             self._ServiceBag:GetService(instance)
         end
     end
@@ -58,6 +59,7 @@ function InitServiceClient.Start(self: Module)
 		WheelUIRefs:Start()
 		HUDButtonsUIRefs:Start()
 		HUDOffersUIRefs:Start()
+		GiftsUIRefs:Start()
 	end)
 end
 

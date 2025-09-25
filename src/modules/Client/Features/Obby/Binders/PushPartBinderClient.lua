@@ -12,7 +12,7 @@ local require = require(script.Parent.loader).load(script)
 
 -- [ Imports ] --
 local ServiceBag = require("ServiceBag")
-local PushPartStructure = require("PushPartStructure")
+local PushPartRefBuilder = require("PushPartRefBuilder")
 
 -- [ Constants ] --
 local TWEEN_INFO = TweenInfo.new(20)
@@ -28,7 +28,7 @@ PushPartBinderClient.Tag = "PushPartBinder"
 
 export type ObjectData = {
     _Instance: BasePart,
-    _PushPartStructure: PushPartStructure.Structure,
+    _PushPartRefs: PushPartRefBuilder.Structure,
     _Attributes: {
         Power: number,
     },
@@ -40,7 +40,7 @@ export type Module = typeof(PushPartBinderClient)
 -- [ Private Functions ] --
 local function _SetupTextureAnimation(self: Object)
     while true do
-        local Animation = TweenService:Create(self._PushPartStructure.Texture, TWEEN_INFO, { OffsetStudsV = 100})
+        local Animation = TweenService:Create(self._PushPartRefs.Texture, TWEEN_INFO, { OffsetStudsV = 100})
         Animation:Play()
         Animation.Completed:Wait()
     end
@@ -55,7 +55,7 @@ function PushPartBinderClient.new(instance: Instance, serviceBag: ServiceBag.Ser
     end
 
     self._Instance = instance
-    self._PushPartStructure = PushPartStructure(self._Instance)
+    self._PushPartRefs = PushPartRefBuilder(self._Instance)
 
     self._Attributes = {
         Power = (self._Instance:GetAttribute("Power") :: number) or 10,

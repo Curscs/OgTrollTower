@@ -16,17 +16,11 @@ local _require = require(script.Parent.loader).load(script)
 -- [ Variables ] --
 
 -- [ Module Table ] --
-local OffersConfig = {}
-
--- [ Types ] --
-
-export type Module = typeof(OffersConfig)
-
-OffersConfig._Offers = {
+local OffersConfig = {
     ["1"] = {
         ["1"] = {
             Name = "Rainbow Carpet",
-            Type = "Item",
+            Type = "Item", -- types: { Currency, Item }
             ProductID = "",
             Image = "",
         },
@@ -86,18 +80,7 @@ OffersConfig._Offers = {
     }
 }
 
--- [ Private Functions ] --
-
--- [ Public Functions ] --
-function OffersConfig.GetVar(self: Module, offerNum: string): any
-    local data = self._Offers[offerNum]
-    local value = data
-
-    if value == nil then
-        error("Offer number '" .. tostring(offerNum) .. "' not found in OffersConfig")
-    end
-
-    return value
-end
+-- [ Types ] --
+export type Module = typeof(OffersConfig)
 
 return OffersConfig :: Module

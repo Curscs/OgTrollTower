@@ -25,7 +25,7 @@ local PROFILE_TEMPLATE = {
     Wheel = {
         Spins = 0,
         NextFreeSpin = 0,
-    }
+    },
 }
 local DISPLAY_STATS = {"Coins"}
 

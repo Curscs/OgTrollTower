@@ -69,7 +69,7 @@ function _SetupFreeSpin(self: Module, player: Player)
         end
 
         self._DataService:AddData(player, 1, {"Wheel", "Spins"})
-        self._DataService:SetData(player, os.clock() + WheelConfig:GetVar("FreeSpinCooldown"), {"Wheel", "NextFreeSpin"})
+        self._DataService:SetData(player, os.clock() + WheelConfig.FreeSpinCooldown, {"Wheel", "NextFreeSpin"})
 
         _SetupFreeSpin(self, player)
     end)
@@ -104,7 +104,7 @@ function WheelService.Spin(self: Module, player: Player)
         return
     end
 
-    local Rewards = self._Cache["Rewards"] or WheelConfig:GetVar("Rewards")
+    local Rewards = self._Cache["Rewards"] or WheelConfig.Rewards
     local Chances = self._Cache["Chances"] or {}
 
     if next(Chances) == nil then

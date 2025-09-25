@@ -13,7 +13,7 @@ local require = require(script.Parent.loader).load(script)
 -- [ Imports ] --
 local ServiceBag = require("ServiceBag")
 local Binder = require("Binder")
-local ActionButtonStructure = require("ActionButtonStructure")
+local ActionButtonRefBuilder = require("ActionButtonRefBuilder")
 
 -- [ Types ] --
 
@@ -32,7 +32,7 @@ ActionButtonBinderClient.Tag = "ActionButtonBinder"
 export type ObjectData = {
     -- Main
     _Instance: Model,
-    _ActionButtonStructure: ActionButtonStructure.ActionButtonStructure,
+    _ActionButtonRefs: ActionButtonRefBuilder.Structure,
     _InitialUpperCFrame: CFrame,
 
     -- Attributes
@@ -116,7 +116,7 @@ function _SetupAttribute(self: Object, name: string, defaultValue: any, connect:
     self._AttributeConns[name] = self._Instance:GetAttributeChangedSignal(name):Connect(function()
         local Value = self._Instance:GetAttribute(name)
 
-        _UpdateAttribute(self, "OnCooldown", Value)
+        _UpdateAttribute(self, name, Value)
 
         if onChange then
             onChange(Value)
@@ -134,8 +134,8 @@ function ActionButtonBinderClient.new(instance: Instance, serviceBag: ServiceBag
 
     -- Main
     self._Instance = instance
-    self._ActionButtonStructure = ActionButtonStructure(self._Instance)
-    self._InitialUpperCFrame = self._ActionButtonStructure.Upper.CFrame
+    self._ActionButtonRefs = ActionButtonRefBuilder(self._Instance)
+    self._InitialUpperCFrame = self._ActionButtonRefs.Upper.CFrame
 
     -- Attributes
     self._Attributes = {
@@ -150,9 +150,9 @@ end
 function ActionButtonBinderClient.BinderAdded(self: Object, binderObject: Binder.Binder<any>)
     _SetupAttribute(self, "OnCooldown", false, true, function(value: any)
         if value == true then
-            AnimateButtonDown(self._ActionButtonStructure.Upper, self._InitialUpperCFrame)
+            AnimateButtonDown(self._ActionButtonRefs.Upper, self._InitialUpperCFrame)
         elseif value == false then
-            AnimateButtonUp(self._ActionButtonStructure.Upper, self._InitialUpperCFrame)
+            AnimateButtonUp(self._ActionButtonRefs.Upper, self._InitialUpperCFrame)
         end
     end)
 end

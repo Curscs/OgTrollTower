@@ -70,7 +70,7 @@ end
 local function UpdateSlotVisuals()
     local Elements = WheelUIRefs.Elements
     
-    for rewardName, rewardData in WheelConfig:GetVar("Rewards") do
+    for rewardName, rewardData in pairs(WheelConfig.Rewards) do
         local ElementFolder = Elements:WaitForChild(tostring(rewardData.Slot)) :: Folder
         local Icon = ElementFolder:WaitForChild("Icon") :: ImageLabel
         local Title = ElementFolder:WaitForChild("Title") :: TextLabel
@@ -82,7 +82,7 @@ end
 
 -- [ Public Functions ] --
 function WheelController:Spin(reward: string)
-    local Rewards = WheelConfig:GetVar("Rewards")
+    local Rewards = WheelConfig.Rewards
     local RewardSlot = Rewards[reward]["Slot"]
     
     PlaySpinAnimation(SLOT_ANGLES[RewardSlot])

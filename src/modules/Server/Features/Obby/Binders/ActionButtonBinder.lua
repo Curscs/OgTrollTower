@@ -12,7 +12,7 @@ local require = require(script.Parent.loader).load(script)
 
 -- [ Imports ] --
 local ServiceBag = require("ServiceBag")
-local ActionButtonStructure = require("ActionButtonStructure")
+local ActionButtonRefBuilder = require("ActionButtonRefBuilder")
 local Promise = require("Promise")
 local DebounceUtil = require("DebounceUtil")
 
@@ -29,7 +29,7 @@ ActionButtonBinder.Tag = "ActionButtonBinder"
 
 export type ObjectData = {
     _Instance: Model,
-    _ActionButtonStructure: ActionButtonStructure.ActionButtonStructure,
+    _ActionButtonRefs: ActionButtonRefBuilder.Structure,
 
     _Attributes: {
         Cooldown: number,
@@ -105,7 +105,7 @@ function ActionButtonBinder.new(instance: Instance, serviceBag: ServiceBag.Servi
     end
 
     self._Instance = instance
-    self._ActionButtonStructure = ActionButtonStructure(self._Instance)
+    self._ActionButtonRefs = ActionButtonRefBuilder(self._Instance)
 
     self._Attributes = {
         Cooldown = instance:GetAttribute("Cooldown") :: number,
@@ -144,7 +144,7 @@ end
 function ActionButtonBinder.BinderAdded(self: Object)
     _SetupAttribute(self, "OnCooldown", false, true)
 
-    self._ActionButtonStructure.Upper.Touched:Connect(function(hit)
+    self._ActionButtonRefs.Upper.Touched:Connect(function(hit)
         local Character = hit.Parent
         local Player = Players:GetPlayerFromCharacter(Character)
 
@@ -164,9 +164,9 @@ function ActionButtonBinder.BinderAdded(self: Object)
         end
         
         local PlayerPosition = Vector3.new(PlayerRoot.Position.X, 0, PlayerRoot.Position.Z)
-        local ButtonPositon = Vector3.new(self._ActionButtonStructure.Upper.Position.X, 0, self._ActionButtonStructure.Upper.Position.Z)
+        local ButtonPositon = Vector3.new(self._ActionButtonRefs.Upper.Position.X, 0, self._ActionButtonRefs.Upper.Position.Z)
 
-        local Radius = self._ActionButtonStructure.Upper.Size.X/2 + 5 -- offset is 5
+        local Radius = self._ActionButtonRefs.Upper.Size.X/2 + 5 -- offset is 5
         local Distance = (PlayerPosition - ButtonPositon).Magnitude
 
         if Distance > Radius then
