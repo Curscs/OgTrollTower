@@ -16,7 +16,7 @@ local ServiceBag = require("ServiceBag")
 local Remoting = require("Remoting")
 local GiftsConfig = require("GiftsConfig")
 local RemoteGate = require("RemoteGate")
-
+local GiftTypesShared = require("GiftTypesShared")
 
 -- [ Constants ] --
 
@@ -33,7 +33,7 @@ type GiftsData = {
 
 type ModuleData = {
     _ServiceBag: ServiceBag.ServiceBag,
-    _GiftsDatas: { [Player]: GiftsData },
+    _GiftsDatas: { [Player]: GiftTypesShared.GiftsPlayerData },
 }
 
 export type Module = typeof(GiftService) & ModuleData

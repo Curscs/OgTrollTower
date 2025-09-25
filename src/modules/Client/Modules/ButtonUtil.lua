@@ -2,12 +2,12 @@
     @class ButtonUtil
 ]=]
 -- [ Roblox Services ] --
+local TweenService = game:GetService("TweenService")
 
 -- [ Imports ] --
 
 -- [ Requires ] --
-local require = require(script.Parent.loader).load(script)
-local TweenService = game:GetService("TweenService")
+local _require = require(script.Parent.loader).load(script)
 
 -- [ Imports ] --
 

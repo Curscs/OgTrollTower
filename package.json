@@ -11,7 +11,7 @@
   "dependencies": {
     "@quenty/binder": "^14.22.0",
     "@quenty/clienttranslator": "^14.21.0",
-    "@quenty/cmdrservice": "^13.25.0",
+    "@quenty/cmdrservice": "^13.25.1",
     "@quenty/debounce": "^2.4.0",
     "@quenty/loader": "^10.9.0",
     "@quenty/servicebag": "^11.13.1",
