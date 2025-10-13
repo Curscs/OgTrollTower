@@ -32,7 +32,7 @@ GameRefs._Promise = Promise.new()
 -- [ Public Functions ] --
 function GameRefs.Start(self: Module)
     self.Game = Workspace:WaitForChild("Game")
-    self.ActionButtons = self.Game:WaitForChild("ActionButtons") :: Folder
+    self.ActionButtons = self.Game:WaitForChild("Obby"):WaitForChild("Troll"):WaitForChild("ActionButtons") :: Folder
 
     self._Promise:Resolve()
 end

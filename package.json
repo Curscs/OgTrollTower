@@ -9,6 +9,7 @@
   ],
   "license": "UNLICENSED",
   "dependencies": {
+    "@quenty/attributeutils": "^14.20.0",
     "@quenty/binder": "^14.22.0",
     "@quenty/clienttranslator": "^14.21.0",
     "@quenty/cmdrservice": "^13.25.1",

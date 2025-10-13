@@ -1,27 +1,23 @@
 {
   "name": "Codebase",
-  "globIgnorePaths": [ "**/.package-lock.json" ],
+  "globIgnorePaths": [
+    "**/package-lock.json"
+  ],
   "tree": {
     "$className": "DataModel",
     "ServerScriptService": {
       "Game": {
         "$className": "Folder",
-        "Modules": {
-          "$path": "src/modules"
-        },
+        "Modules": { "$path": "src/modules" },
         "Packages": {
           "$path": "node_modules"
         }
       },
-      "Scripts": {
-        "$path": "src/scripts/Server"
-      }
+      "Scripts": { "$path": "src/scripts/Server" }
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
-        "CodebaseScripts": {
-          "$path": "src/scripts/Client"
-        }
+        "CodebaseScripts": { "$path": "src/scripts/Client" }
       }
     }
   }

@@ -3,6 +3,7 @@
 ]=]
 
 -- [ Roblox Services ] --
+local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -16,8 +17,10 @@ local ServiceBag = require("ServiceBag")
 local Remoting = require("Remoting")
 local ChanceUtil = require("ChanceUtil")
 local WheelConfig = require("WheelConfig")
-local DataService = require("DataService")
 local Promise = require("Promise")
+local RemoteGate = require("RemoteGate")
+local DebounceUtil = require("DebounceUtil")
+local MapCacheUtils = require("MapCacheUtils")
 
 -- [ Constants ] --
 
@@ -28,10 +31,13 @@ local Remotes = Remoting.new(ReplicatedStorage:WaitForChild("Remotes"), "WheelSe
 local WheelService = {}
 
 -- [ Types ] --
+type DataService = typeof(require("DataService"))
+type ToolService = typeof(require("ToolService"))
 
 type ModuleData = {
     _ServiceBag: ServiceBag.ServiceBag,
-    _DataService: DataService.Module,
+    _DataService: DataService,
+    _ToolService: ToolService,
     _Cache: {
         Reward: {[string]: {[string]: any}}?,
         Chances: {[string]: number}?,
@@ -42,11 +48,21 @@ type ModuleData = {
 export type Module = typeof(WheelService) & ModuleData
 
 -- [ Private Functions ] --
+function PurchaseSpins(player: Player, amount: number)
+    if amount == 1 then
+        MarketplaceService:PromptProductPurchase(player, 3419408958)
+    elseif amount == 3 then
+        MarketplaceService:PromptProductPurchase(player, 3422365091)
+    elseif amount == 10 then
+        MarketplaceService:PromptProductPurchase(player, 3422365088)
+    end
+end
+
 function _SetupFreeSpin(self: Module, player: Player)
     local Success, Spins = self._DataService:GetData(player, {"Wheel", "Spins"})
-    local Success2, NextFreeSpin = self._DataService:GetData(player, {"Wheel", "NextFreeSpin"})
+    local Success_2, NextFreeSpin = self._DataService:GetData(player, {"Wheel", "NextFreeSpin"})
 
-    if not Success or Success2 then
+    if not Success or not Success_2 then
         warn("Failed to get NextFreeSpin for player " .. tostring(player))
         return
     end
@@ -63,34 +79,48 @@ function _SetupFreeSpin(self: Module, player: Player)
     local Remaining = math.max(0, NextFreeSpin - os.clock())
 
     self._FreeSpinTasks[player] = Promise.delay(Remaining, function()
-        local Success_2, newNextFreeSpin = self._DataService:GetData(player, {"Wheel", "NextFreeSpin"})
-        if not Success_2 or newNextFreeSpin > os.clock() then
+        local Success_3, newNextFreeSpin = self._DataService:GetData(player, {"Wheel", "NextFreeSpin"})
+        if not Success_3 or newNextFreeSpin > os.clock() then
             return
         end
 
         self._DataService:AddData(player, 1, {"Wheel", "Spins"})
         self._DataService:SetData(player, os.clock() + WheelConfig.FreeSpinCooldown, {"Wheel", "NextFreeSpin"})
 
+        local Success_4, Data_4 = self._DataService:GetData(player, {"Wheel"})
+
+        if not Success_4 then
+            return
+        end
+    
+        Remotes:FireClient("WheelDataChanged", player, MapCacheUtils:CreateDiff(nil,  nil, Data_4))
+
         _SetupFreeSpin(self, player)
     end)
 end
 
-function _GiveReward(self: Module, player: Player, reward: string, rewardType: string)
-    if rewardType == "Item" then
-        self._DataService:SetData(player, true, {"OwnedItems", reward}, true)
-    elseif rewardType == "Currency" then
-        local Parts = string.split(reward, " ")
-
-        local Amount = tonumber(Parts[1]) or error("Failed to parse amount from reward string: " .. tostring(reward))
-        local Currency = Parts[2]
-
-        self._DataService:AddData(player, Amount, {Currency})
-    elseif rewardType == "HD Admin" then
-        -- soon
+function _RewardPlayer(self: Module, player: Player, rewardType: string, rewardName: string)
+    if rewardType == "Currency" then
+        local Amount, CurrencyName = rewardName:split(" ")[1], rewardName:split(" ")[2]
+        self._DataService:AddData(player, tonumber(Amount) or 0, {CurrencyName})
+    elseif rewardType == "Tool" then
+        self._ToolService:StoreTool(player, rewardName)
+    elseif rewardType == "HDAdmin" then
+        -- do something
     end
 end
 
 -- [ Public Functions ] --
+function WheelService.WheelDataChanged(self: Module, player: Player)
+    local Success_2, Data_2 = self._DataService:GetData(player, {"Wheel"})
+
+    if not Success_2 then
+        return
+    end
+
+    Remotes:FireClient("WheelDataChanged", player, MapCacheUtils:CreateDiff(nil,  nil, Data_2))
+end
+
 function WheelService.Spin(self: Module, player: Player)
     local Success, Spins = self._DataService:GetData(player, {"Wheel", "Spins"})
 
@@ -114,10 +144,8 @@ function WheelService.Spin(self: Module, player: Player)
     end
 
     local ChanceUtilObject = ChanceUtil.new(Chances)
-    local Reward = ChanceUtilObject:Choose()
-    local RewardType = Rewards[Reward]["RewardType"]
-
-    _GiveReward(self, player, Reward, RewardType)
+    local RewardName = ChanceUtilObject:Choose()
+    local RewardType = Rewards[RewardName]["RewardType"]
 
     if not self._Cache["Chances"] then
         self._Cache["Chances"] = Chances
@@ -125,7 +153,12 @@ function WheelService.Spin(self: Module, player: Player)
         self._Cache["Rewards"] = Rewards
     end
 
-    Remotes:FireClient("WheelSpinned", player, Reward)
+    self._DataService:AddData(player, -1, {"Wheel", "Spins"})
+
+    _RewardPlayer(self, player, RewardType, RewardName)
+
+    self:WheelDataChanged(player)
+    Remotes:FireClient("WheelSpinned", player, RewardName)
 end
 
 function WheelService.Init(self: Module, serviceBag: ServiceBag.ServiceBag)
@@ -134,16 +167,37 @@ function WheelService.Init(self: Module, serviceBag: ServiceBag.ServiceBag)
     end
     self._ServiceBag = assert(serviceBag, "No serviceBag")
     
-    self._DataService = self._ServiceBag:GetService(DataService)
+    self._DataService = self._ServiceBag:GetService(require("DataService"))
+    self._ToolService = self._ServiceBag:GetService(require("ToolService"))
+
     self._Cache = {}
     self._FreeSpinTasks = {}
     
     Remotes:DeclareEvent("WheelSpinned")
+    Remotes:DeclareEvent("WheelDataChanged")
 end
 
 function WheelService.Start(self: Module)
+    Remotes:Connect("BuySpins", function(player: Player, amount: number)
+        local Success, _ = RemoteGate(function()
+            return  PurchaseSpins(player, amount)
+        end)
+
+        if not Success then
+            return
+        end
+    end)
+
     Remotes:Connect("Spin", function(player: Player)
-        self:Spin(player)
+        local Success, _ = RemoteGate(function()
+            DebounceUtil:Try(tostring(player.UserId) .. "/WheelService/Spin", 5)
+            
+            return self:Spin(player)
+        end)
+
+        if not Success then
+            return
+        end
     end)
 
     Players.PlayerAdded:Connect(function(player: Player)

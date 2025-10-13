@@ -17,7 +17,7 @@ local DebounceTimer = require("DebounceTimer")
 local RateLimiter = DebounceTimer.new(0.1)
 
 -- [ Module Table ] --
-local something = function<V>(onSuccess: () -> V): (boolean, V?)
+local something = function<V>(onSuccess: () -> V?): (boolean, V?)
     if RateLimiter:IsDone() then
         RateLimiter:Restart()
         return true, onSuccess()

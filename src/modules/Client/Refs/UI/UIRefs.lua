@@ -24,6 +24,7 @@ type ModuleData = {
     PlayerGui: PlayerGui,
     Main: ScreenGui,
     HUD: ScreenGui,
+    Notifications: ScreenGui,
 
     _Promise: Promise.Promise<any>,
 }
@@ -38,6 +39,7 @@ function WheelUIRefs.Start(self: Module)
     self.PlayerGui = Player:WaitForChild("PlayerGui") :: PlayerGui
     self.Main = self.PlayerGui:WaitForChild("Main") :: ScreenGui
     self.HUD = self.PlayerGui:WaitForChild("HUD") :: ScreenGui
+    self.Notifications = self.PlayerGui:WaitForChild("Notifications") :: ScreenGui
 
     self._Promise:Resolve()
 end

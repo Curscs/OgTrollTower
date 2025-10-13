@@ -36,6 +36,7 @@ GiftsUIRefs._Promise = Promise.new()
 
 -- [ Public Functions ] --
 function GiftsUIRefs.Start(self: Module)
+	UIRefs:WhenReady()
 	self.GiftsUI = UIRefs.Main:WaitForChild("GiftsUI") :: Frame
 	self.UIScale = self.GiftsUI:WaitForChild("UIScale") :: UIScale
 	self.Container = self.GiftsUI:WaitForChild("Container") :: Frame

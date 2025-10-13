@@ -19,6 +19,7 @@ local WheelUIRefs = require("WheelUIRefs")
 local HUDButtonsUIRefs = require("HUDButtonsUIRefs")
 local HUDOffersUIRefs = require("HUDOffersUIRefs")
 local GiftsUIRefs = require("GiftsUIRefs")
+local HUDStatsUIRefs = require("HUDStatsUIRefs")
 
 -- [ Types ] --
 
@@ -60,6 +61,7 @@ function InitServiceClient.Start(self: Module)
 		HUDButtonsUIRefs:Start()
 		HUDOffersUIRefs:Start()
 		GiftsUIRefs:Start()
+		HUDStatsUIRefs:Start()
 	end)
 end
 

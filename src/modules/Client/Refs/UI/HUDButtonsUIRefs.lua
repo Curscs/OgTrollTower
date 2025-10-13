@@ -16,7 +16,7 @@ local UIRefs = require("UIRefs")
 -- [ Variables ] --
 
 -- [ Module Table ] --
-local WheelUIRefs = {}
+local HUDButtonsUIRefs = {}
 
 type ModuleData = {
     Right: Frame,
@@ -27,14 +27,15 @@ type ModuleData = {
 
     _Promise: Promise.Promise<any>,
 }
-export type Module = typeof(WheelUIRefs) & ModuleData
+export type Module = typeof(HUDButtonsUIRefs) & ModuleData
 
-WheelUIRefs._Promise = Promise.new()
+HUDButtonsUIRefs._Promise = Promise.new()
 
 -- [ Private Functions ] --
 
 -- [ Public Functions ] --
-function WheelUIRefs.Start(self: Module)
+function HUDButtonsUIRefs.Start(self: Module)
+    UIRefs:WhenReady()
     self.Right = UIRefs.HUD:WaitForChild("Right") :: Frame
     self.HUDButtonsUI = self.Right:WaitForChild("HUDButtonsUI") :: Frame
     self.Gifts = self.HUDButtonsUI:WaitForChild("Gifts") :: ImageButton
@@ -44,8 +45,8 @@ function WheelUIRefs.Start(self: Module)
     self._Promise:Resolve()
 end
 
-function WheelUIRefs.WhenReady(self: Module)
+function HUDButtonsUIRefs.WhenReady(self: Module)
     return self._Promise
 end
 
-return WheelUIRefs :: Module
+return HUDButtonsUIRefs :: Module

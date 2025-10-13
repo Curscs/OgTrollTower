@@ -20,7 +20,7 @@ local OffersConfig = {
     ["1"] = {
         ["1"] = {
             Name = "Rainbow Carpet",
-            Type = "Item", -- types: { Currency, Item }
+            Type = "Tool", -- types: { Currency, Tool }
             ProductID = "",
             Image = "",
         },
@@ -34,7 +34,7 @@ local OffersConfig = {
 
         ["3"] = {
             Name = "Alpha Male Slap",
-            Type = "Item",
+            Type = "Tool",
             ProductID = "",
             Image = "",
 
@@ -51,21 +51,21 @@ local OffersConfig = {
     ["2"] = {
         ["1"] = {
             Name = "Blue Laser Gun",
-            Type = "Item",
+            Type = "Tool",
             ProductID = "",
             Image = "",
         },
 
         ["2"] = {
             Name = "Giant Slap Hand",
-            Type = "Item",
+            Type = "Tool",
             ProductID = "",
             Image = "",
         },
 
         ["3"] = {
             Name = "Flying Cloud",
-            Type = "Item",
+            Type = "Tool",
             ProductID = "",
             Image = "",
 
@@ -73,7 +73,7 @@ local OffersConfig = {
 
         ["4"] = {
             Name = "Invisible Cape",
-            Type = "Item",
+            Type = "Tool",
             ProductID = "",
             Image = "",
         }

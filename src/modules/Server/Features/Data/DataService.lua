@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- [ Imports ] --
 local ProfileStore = require("./Modules/ProfileStore")
+local ProfileConfig = require("./Configs/ProfileConfig")
 
 -- [ Requires ] --
 local require = require(script.Parent.loader).load(script)
@@ -15,19 +16,11 @@ local require = require(script.Parent.loader).load(script)
 -- [ Imports ] --
 local ServiceBag = require("ServiceBag")
 local Remoting = require("Remoting")
-local DebounceUtil = require("DebounceUtil")
 
 -- [ Constants ] --
-local KEY = "Dev_2"
-local PROFILE_TEMPLATE = {
-    Coins = 0,
-    OwnedItems = {},
-    Wheel = {
-        Spins = 0,
-        NextFreeSpin = 0,
-    },
-}
-local DISPLAY_STATS = {"Coins"}
+local KEY = "Dev_7"
+local PROFILE_TEMPLATE = ProfileConfig.Template
+local DISPLAY_STATS = ProfileConfig.Leaderstats
 
 -- [ Variables ] --
 local PlayerStore = ProfileStore.New(KEY, PROFILE_TEMPLATE)
@@ -38,18 +31,17 @@ local Remotes = Remoting.new(ReplicatedStorage:WaitForChild("Remotes"), "DataSer
 local DataService = {}
 
 -- [ Types ] --
-type ProfileData = {
-    [string]: any
-}
-type Profile = ProfileStore.Profile<ProfileData>
+
+type Profile = ProfileStore.Profile<ProfileConfig.ProfileData>
 
 type ModuleData = {
     _ServiceBag: ServiceBag.ServiceBag
 }
+
 export type Module = typeof(DataService) & ModuleData
 
 -- [ Private Functions ] --
-local function GetProfile(player: Player): Profile
+function GetProfile(player: Player): Profile
     while Profiles[player] == nil do
         task.wait(0.1)
     end
@@ -57,7 +49,7 @@ local function GetProfile(player: Player): Profile
     return Profiles[player]
 end
 
-local function CreateLeaderstats(player: Player)
+function CreateLeaderstats(player: Player)
     local Profile = GetProfile(player)
 
     local FolderInstance = Instance.new("Folder", player)
@@ -66,14 +58,14 @@ local function CreateLeaderstats(player: Player)
     for _, displayStat in DISPLAY_STATS do
         local value = Profile.Data[displayStat]
         if value and type(value) == "number" then
-            local ValueInstance = Instance.new("IntValue", FolderInstance)
+            local ValueInstance = Instance.new("NumberValue", FolderInstance)
             ValueInstance.Name = displayStat
             ValueInstance.Value = value
         end
     end
 end
 
-local function PlayerAdded(player: Player)
+function PlayerAdded(player: Player)
     local Profile = PlayerStore:StartSessionAsync(`{player.UserId}`, {
         Cancel = function()
             return player.Parent ~= Players
@@ -102,7 +94,7 @@ local function PlayerAdded(player: Player)
     end
 end
 
-local function ProcessPath(InitialPath: any, path: { string }, hardSet: boolean?): (boolean, any, any, any)
+function ProcessPath(InitialPath: any, path: { string }, hardSet: boolean?): (boolean, any, any, any)
     local CurrentPath = InitialPath
     local ParentPath
     local LastSegment
@@ -123,6 +115,24 @@ local function ProcessPath(InitialPath: any, path: { string }, hardSet: boolean?
     end
 
     return true, CurrentPath, ParentPath, LastSegment
+end
+
+function DisplayStatUpdated(player: Player, statName: string, statValue: any)
+    local LeaderstatsFolder = player:FindFirstChild("leaderstats")
+
+    if not LeaderstatsFolder or not LeaderstatsFolder:IsA("Folder") then
+        warn("Leaderstats folder missing or not a Folder instance for player: " .. tostring(player))
+        return
+    end
+
+    local StatInstance = LeaderstatsFolder:FindFirstChild(statName)
+
+    if not StatInstance or not StatInstance:IsA("NumberValue") then
+        warn("Stat instance is not a valid value type for player: " .. tostring(player))
+        return
+    end
+
+    StatInstance.Value = statValue
 end
 
 -- [ Public Functions ] --
@@ -163,12 +173,20 @@ function DataService.SetData(self: Module, player: Player, value: any, path: { s
     local Success, _, ParentPath, LastSegment = ProcessPath(Profile.Data, path, hardSet)
 
     if not Success then
-        print(Success)
         return false
     else
+        -- signal to clients that leaderstat is changed
+        if table.find(DISPLAY_STATS, LastSegment) then
+            DisplayStatUpdated(player, LastSegment, value)
+        end
+    
         ParentPath[LastSegment] = value
         return true
     end
+end
+
+function DataService.GetProfile(self: Module, player: Player): Profile
+    return GetProfile(player)
 end
 
 function DataService.GetData(self: Module, player: Player, path: { string }): (boolean, any)
@@ -196,15 +214,11 @@ function DataService.Init(self: Module, serviceBag: ServiceBag.ServiceBag)
 end
 
 function DataService.Start(self: Module)
-    Players.PlayerAdded:Connect(PlayerAdded)
-
     Remotes:Bind("GetData", function(player: Player, path: { string })
-        if not DebounceUtil:Try(tostring(player.UserId) .. "/DataService/GetData", 0.1) then
-            return false
-        else
-            return self:GetData(player, path)
-        end
-    end)    
+        return self:GetData(player, path)
+    end)
+
+    Players.PlayerAdded:Connect(PlayerAdded)  
 end
 
 return DataService :: Module

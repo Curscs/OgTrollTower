@@ -20,8 +20,8 @@ local GiftsConfig = {
     Gifts = {
         ["1"] = {
             Name = "300 Coins",
-            Type = "Currency", -- types: { Currency, Item }
-            Time = 140,
+            Type = "Currency", -- types: { Currency, Tool }
+            Time = 1,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),
             BackGradient = ColorSequence.new(Color3.fromRGB(145, 105, 19)),
@@ -29,7 +29,7 @@ local GiftsConfig = {
         },
         ["2"] = {
             Name = "Speed Coil",
-            Type = "Item",
+            Type = "Tool",
             Time = 240,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),
@@ -47,7 +47,7 @@ local GiftsConfig = {
         },
         ["4"] = {
 			Name = "Gravity Coil",
-            Type = "Item",
+            Type = "Tool",
             Time = 600,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),
@@ -65,7 +65,7 @@ local GiftsConfig = {
         },
         ["6"] = {
 			Name = "Grapple Hook",
-            Type = "Item",
+            Type = "Tool",
             Time = 1100,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),
@@ -74,7 +74,7 @@ local GiftsConfig = {
         },
         ["7"] = {
 			Name = "Invisibility Cape",
-            Type = "Item",
+            Type = "Tool",
             Time = 1300,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),
@@ -83,7 +83,7 @@ local GiftsConfig = {
         },
         ["8"] = {
 			Name = "Rainbow Carpet",
-            Type = "Item",
+            Type = "Tool",
             Time = 1800,
     
             FrontGradient = ColorSequence.new(Color3.fromRGB(255, 198, 65)),

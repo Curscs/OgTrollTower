@@ -26,7 +26,7 @@ local WheelConfig = {
         ["Rainbow Carpet"] = {
             Slot = 2,
             Chance = 0.9,
-            RewardType = "Item",
+            RewardType = "Tool",
             Image = "rbxassetid://130845798089713",
         },
         ["1000 Coins"] = {
@@ -38,25 +38,25 @@ local WheelConfig = {
         ["OP Coil"] = {
             Slot = 4,
             Chance = 18,
-            RewardType = "Item",
+            RewardType = "Tool",
             Image = "rbxassetid://132794750806317"
         },
         ["God Slap"] = {
             Slot = 5,
             Chance = 6,
-            RewardType = "Item",
+            RewardType = "Tool",
             Image = "rbxassetid://105078718716725"
         },
         ["Grapple Hook"] = {
             Slot = 6,
             Chance = 8,
-            RewardType = "Item",
+            RewardType = "Tool",
             Image = "rbxassetid://132957916234592"
         },
         ["Error Slap"] = {
             Slot = 7,
             Chance = 6,
-            RewardType = "Item",
+            RewardType = "Tool",
             Image = "rbxassetid://105078718716725"
         },
         ["HD Admin"] = {

@@ -1,7 +1,12 @@
 local GiftTypesShared = {}
 
+export type GiftData = {
+    NextClaim: number,
+    Claimed: boolean
+}
+
 export type GiftsPlayerData = {
-    [string]: { NextClaim: number, Claimed: boolean}
+    [string]: GiftData
 }
 
 return GiftTypesShared
